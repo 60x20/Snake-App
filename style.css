@@ -1,0 +1,283 @@
+:root {
+  /* these variables are referenced and will be overridden via JS */
+  
+  /* max function and vw, vh, px should not be altered, numbers can be (accessed via JS (regex used)) */
+  /* vh, vw will be converted to px via JS to allow zooming */
+  --grid-column-px: max(4vh, 4vw, 8px);
+  --grid-row-px: var(--grid-column-px);
+
+  /* automatically set via JS */
+  --grid-column-size: 15;
+  --grid-row-size: 15;
+
+  /* variables special to snake, since snake element is constantly changing stored in the root */
+  /* variables for border values (will be overridden via JS) */ 
+  --head-top: 0;
+  --head-bottom: var(--bottomAsHead);
+  --head-left: var(--leftAsSide);
+  --head-right: var(--rightAsSide);
+  /* sides */
+  --topAsSide: calc(var(--grid-row-px) / 4) solid transparent;
+  --bottomAsSide: calc(var(--grid-row-px) / 4) solid transparent;
+  --leftAsSide: calc(var(--grid-column-px) / 4) solid transparent;
+  --rightAsSide: calc(var(--grid-column-px) / 4) solid transparent;
+  /* heads */
+  --topAsHead: var(--grid-row-px) solid darkgray;
+  --bottomAsHead: var(--grid-row-px) solid darkgray;
+  --leftAsHead: var(--grid-column-px) solid darkgray;
+  --rightAsHead: var(--grid-column-px) solid darkgray;
+}
+
+html {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  margin: 0px;
+  font-family: 'VT323', monospace;
+  overflow: hidden;
+  background-color: #414141;
+}
+
+/* h1 elements are used like p */
+h1 {
+  margin: 0;
+  font-size: inherit;
+}
+
+button {
+  border: none;
+  font-size: calc(var(--min-distance-of-board) * .05);
+  padding: calc(var(--min-distance-of-board) * .01);
+  background-color: darkgray;
+  color: black;
+  cursor: pointer;
+}
+
+#wrapper-div {
+  position: relative;
+  --board-color: #c4cfa3;
+  --green-text-color: #abb78a;
+  --board-height: calc(var(--grid-row-size) * var(--grid-row-px));
+  --board-width: calc(var(--grid-column-size) * var(--grid-column-px));
+  --min-distance-of-board: min(var(--board-height), var(--board-width));
+  /* border should be whichever is min, making board cover max 65% (50% + 15%) */
+   --total-border: calc(var(--min-distance-of-board) * .1);
+   --total-box-shadow: calc(var(--total-border) * .5);
+  padding: var(--total-box-shadow); /* padding is due to box shadow being outside of the document flow  */
+  z-index: 0; /* creating a parent stacking context for children */
+  font-size: calc(var(--min-distance-of-board) * .1);
+}
+
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-column-size), var(--grid-column-px));
+  grid-template-rows: repeat(var(--grid-row-size), var(--grid-row-px));
+  background-color: var(--board-color);
+  border: #8b966c solid var(--total-border);
+  border-radius: var(--total-border);
+  box-shadow: 
+    0 0 0 calc(var(--total-box-shadow) * .5) var(--green-text-color),
+    0 0 0 var(--total-box-shadow) #595f43
+  ;
+  position: relative;
+  z-index: -1; /* game-board (along with its children) should always be under the start-wrapper */
+}
+
+/* div.snake and div.food elements are generated in JS */
+.snake {
+  box-sizing: border-box;
+  background-color: #595f43;
+}
+/* setting color for the head of the snake */
+:first-of-type.snake {
+  /* !important is because (when snake.length is 1) :first-of-type.snake === :nth-last-of-type(2).snake */
+  background-color: transparent !important;
+  z-index: 3 !important; /* head should always be seen when it is overlapping another piece */
+  
+  /* shaping the head depending on the direction, will be applied via JS */
+  border-top: var(--head-top);
+  border-bottom: var(--head-bottom);
+  border-left: var(--head-left);
+  border-right: var(--head-right);
+}
+/* setting color for the first three pieces of snake after the head */
+.snake:is(:nth-of-type(2), :nth-of-type(3), :nth-of-type(4)) {
+  background-color: darkgray;
+  z-index: 1; /* should be seen when overlapping another piece, except for the head and food */
+}
+/* setting color for the tail (the last part of the snake) (it's always just before the div.food) */
+:nth-last-of-type(2).snake {
+  background-color: black;
+  z-index: 1; /* should be seen when overlapping another piece, except for the head and food */
+}
+.food {
+  background-color: #dedede;
+  z-index: 2; /* should be seen when overlapping another piece, except for the head */
+  border-radius: 50%;
+}
+
+#start-wrapper {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+  display: flex;
+  flex-direction: column;
+  /* height and width === gameboard height and width */
+  height: var(--board-height);
+  width: var(--board-width);
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--min-distance-of-board) * .1);
+  background-color: var(--board-color); /* background-color is to remove transparency ('display: none' is added via JS) */
+}
+
+/* making the logo unselectable, undraggable */
+img, * {
+  user-select: none;
+}
+img {
+  pointer-events: none;
+}
+
+#logo {
+  height: calc(var(--min-distance-of-board) * .5);
+  object-fit: contain;
+}
+
+#instruction-text {
+  color: #333;
+  text-align: center;
+  text-transform: capitalize;
+  font-size: inherit;
+}
+
+/* instruments and game-state are on the vertical sides */
+#instruments, #game-state {
+  position: absolute;
+  top: var(--total-box-shadow);
+  height: calc(100% - (var(--total-box-shadow) * 2));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8%;
+}
+
+#instruments {
+  right: 100%;
+  align-items: flex-end;
+  text-align: end;
+  color: var(--green-text-color);
+}
+
+#speed-instrument::after {
+  content: 'ms';
+}
+
+#game-state {
+  left: 100%;
+  align-items: stretch;
+}
+
+/* variable setters and scores are on the horizontal sides */
+#variable-setters, .scores {
+  position: absolute;
+  left: 0;
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#variable-setters {
+  top: 100%;
+  align-items: flex-start;
+}
+
+#variable-setters label {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  font-size: calc(var(--min-distance-of-board) * .05);
+}
+#variable-setters label span {
+  color: var(--green-text-color);
+}
+#variable-setters input {
+  width: 90%;
+  border: 0;
+  padding: 0;
+  font-size: calc(var(--min-distance-of-board) * .05);
+  text-align: center;
+  padding-block: 0;
+  padding-inline: 0;
+  appearance: textfield;
+}
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+button:focus-visible, input:focus-visible {
+  /* User Agent's custom style will be overridden */
+  outline: black solid calc(var(--min-distance-of-board) * .01);
+}
+
+.scores {
+  bottom: 100%;
+}
+
+#score {
+  color: var(--green-text-color);
+}
+
+#highScore {
+  color: #d8ddca;
+}
+
+#accessibility-div {
+  position: absolute;
+  top: 0%;
+  translate: -50% -50%;
+  left: 50%;
+  display: grid;
+  grid-template-areas: 
+    ". up up ."
+    "left left right right"
+    ". down down ."
+  ;
+  gap: 5%;
+}
+
+#move-up-btn {
+  grid-area: up;
+}
+#move-left-btn {
+  grid-area: left;
+}
+#move-right-btn {
+  grid-area: right;
+}
+#move-down-btn {
+  grid-area: down;
+}
+
+.displayNone {
+  display: none !important;
+}
+
+/* tab loop */
+#accessibility-div > :first-child {
+  position: absolute;
+}
+#accessibility-div > :last-child {
+  position: absolute;
+}
