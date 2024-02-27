@@ -246,7 +246,7 @@ button:focus-visible, input:focus-visible {
 #accessibility-div {
   position: absolute;
   top: 0%;
-  translate: -50% -50%;
+  translate: -50% 0;
   left: 50%;
   display: grid;
   grid-template-areas: 
@@ -270,14 +270,14 @@ button:focus-visible, input:focus-visible {
   grid-area: down;
 }
 
-.displayNone {
-  display: none !important;
-}
-
 /* tab loop */
 #accessibility-div > :first-child {
   position: absolute;
 }
 #accessibility-div > :last-child {
   position: absolute;
+}
+
+.displayNone {
+  display: none !important;
 }
