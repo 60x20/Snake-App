@@ -26,6 +26,14 @@
   --bottomAsHead: var(--grid-row-px) solid darkgray;
   --leftAsHead: var(--grid-column-px) solid darkgray;
   --rightAsHead: var(--grid-column-px) solid darkgray;
+
+  /* variables used on game-board */
+  /* border should be whichever is min, making board cover max 65% (50% + 15%) */
+  --total-border: calc(var(--min-distance-of-board) * .1);
+  --total-box-shadow: calc(var(--total-border) * .5);
+  --board-width: calc(var(--grid-column-size) * var(--grid-column-px));
+  --board-height: calc(var(--grid-row-size) * var(--grid-row-px));
+  --min-distance-of-board: min(var(--board-height), var(--board-width));
 }
 
 html {
@@ -65,12 +73,6 @@ button {
   position: relative;
   --board-color: #c4cfa3;
   --green-text-color: #abb78a;
-  --board-height: calc(var(--grid-row-size) * var(--grid-row-px));
-  --board-width: calc(var(--grid-column-size) * var(--grid-column-px));
-  --min-distance-of-board: min(var(--board-height), var(--board-width));
-  /* border should be whichever is min, making board cover max 65% (50% + 15%) */
-   --total-border: calc(var(--min-distance-of-board) * .1);
-   --total-box-shadow: calc(var(--total-border) * .5);
   padding: var(--total-box-shadow); /* padding is due to box shadow being outside of the document flow  */
   z-index: 0; /* creating a parent stacking context for children */
   font-size: calc(var(--min-distance-of-board) * .1);
@@ -244,6 +246,11 @@ button:focus-visible, input:focus-visible {
 }
 
 #accessibility-div {
+  /* height === (Body height (100vh) - #wrapper-div height (without padding)) / 2, which is the space between Body's top point and #wrapper-div's content's top point */
+  --accessibility-div-height: calc((100vh - var(--board-height) - (var(--total-border) * 2)) / 2);
+  height: var(--accessibility-div-height);
+  /* width === #wrapper-div-width */
+  width: calc(var(--board-width) + (var(--total-border) * 2) + (var(--total-box-shadow) * 2));
   position: absolute;
   top: 0%;
   translate: -50% 0;
@@ -254,7 +261,25 @@ button:focus-visible, input:focus-visible {
     "left left right right"
     ". down down ."
   ;
-  gap: 5%;
+  row-gap: 5%;
+}
+
+#accessibility-div button {
+  padding: 0;
+  position: relative; /* parent containing block for absolutely positioned images*/
+  background-color: gray;
+  overflow: hidden; /* images are rotated, this makes some parts overflow */
+}
+
+#accessibility-div button img {
+  position: absolute; /* img should not change the dimensions of its parent containing block */
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: transparent;
 }
 
 #move-up-btn {
@@ -268,6 +293,19 @@ button:focus-visible, input:focus-visible {
 }
 #move-down-btn {
   grid-area: down;
+}
+
+#move-up-btn img {
+  rotate: 90deg;
+}
+#move-left-btn img {
+  rotate: 0deg;
+}
+#move-right-btn img {
+  rotate: 180deg;
+}
+#move-down-btn img {
+  rotate: 270deg;
 }
 
 /* tab loop */

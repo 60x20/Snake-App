@@ -68,17 +68,18 @@ const gridColumnPxCSS = getComputedStyle(root).getPropertyValue('--grid-column-p
 const vhNumerator = Number(gridColumnPxCSS.match(/\d+(?=vh)/)[0]);
 const vwNumerator = Number(gridColumnPxCSS.match(/\d+(?=vw)/)[0]);
 const pxNumerator = Number(gridColumnPxCSS.match(/\d+(?=px)/)[0]);
-const oneVH = parseInt(root.clientHeight * .01);
-const oneVW = parseInt(root.clientWidth * .01);
+// should not be less than 1
+const oneVH = parseInt(root.clientHeight * .01) || 1;
+const oneVW = parseInt(root.clientWidth * .01) || 1;
 const gridPixelBeginning = Math.max((oneVH * vhNumerator), (oneVW * vwNumerator), pxNumerator) + 'px';
 root.style.setProperty('--grid-column-px', gridPixelBeginning);
 root.style.setProperty('--grid-row-px', gridPixelBeginning);
 let gridColumnPx = gridPixelBeginning;
 let gridRowPx = gridPixelBeginning;
-// gridColumnSize === 50vw / gridColumnPx(= 4vw || 4 vh || 8px)
-root.style.setProperty('--grid-column-size', parseInt(root.clientWidth / parseInt(gridColumnPx) * .5));
+// gridColumnSize === 50vw / gridColumnPx(= 4vw || 4 vh || 8px), should not be less than 1
+root.style.setProperty('--grid-column-size', parseInt(root.clientWidth / parseInt(gridColumnPx) * .5) || 1);
 // gridRowSize === 50vh / gridRowPx(= 4vw || 4 vh || 8px)
-root.style.setProperty('--grid-row-size', parseInt(root.clientHeight / parseInt(gridRowPx) * .5));
+root.style.setProperty('--grid-row-size', parseInt(root.clientHeight / parseInt(gridRowPx) * .5) || 1);
 let gridColumnSize = Number(getComputedStyle(root).getPropertyValue('--grid-column-size'));
 let gridRowSize = Number(getComputedStyle(root).getPropertyValue('--grid-row-size'));
 let gridColumnCenter = Math.floor(gridColumnSize / 2) + 1;
