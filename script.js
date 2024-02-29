@@ -488,3 +488,15 @@ firstChildForTabLoop.addEventListener('focus', () => {
 lastChildForTabLoop.addEventListener('focus', () => {
   firstBtnForTabLoop.focus();
 })
+
+// what is the viewport?
+const renderViewport = document.getElementById('renderViewport');
+const viewportHeight = document.getElementById('viewportHeight');
+const viewportWidth = document.getElementById('viewportWidth');
+renderViewport.addEventListener('click', () => {
+  viewportWidth.innerText = root.clientWidth;
+  viewportHeight.innerText = root.clientHeight;
+})
+viewportWidth.innerText = root.clientWidth;
+viewportHeight.innerText = root.clientHeight;
+console.log(root.clientWidth, root.clientHeight)
