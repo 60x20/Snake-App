@@ -337,6 +337,11 @@ function handleKeyPress(event) {
     return undefined;
   }
   
+  // disabling scrolling with arrow keys
+  if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+    event.preventDefault();
+  }
+
   if (
     (!gameStarted && event.code === 'Space') ||
     (!gameStarted && event.key === ' ')

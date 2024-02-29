@@ -36,21 +36,15 @@
   --min-distance-of-board: min(var(--board-height), var(--board-width));
 }
 
-html {
-  height: 100dvh;
-  width: 100dvw;
-  overflow: hidden;
-}
-
 body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100dvh;
-  width: 100dvw;
+  height: 100vh;
+  width: 100vw;
   margin: 0px;
   font-family: 'VT323', monospace;
-  overflow: hidden;
+  /* overflow: hidden; */
   background-color: #414141;
 }
 
@@ -76,6 +70,8 @@ button {
   padding: var(--total-box-shadow); /* padding is due to box shadow being outside of the document flow  */
   z-index: 0; /* creating a parent stacking context for children */
   font-size: calc(var(--min-distance-of-board) * .1);
+  /* wrapper-div will have a height of 65vh (maximum) (when min-distance-of-board is height) */
+  translate: 0 -10%; /* there should be approximately 10vh or 12.5vh (minimum) (= 20%) space to the top, half of it is removed to give #accessibility-div some space */
 }
 
 #game-board {
@@ -200,13 +196,13 @@ img {
 }
 
 #variable-setters {
-  top: 100%;
-  align-items: flex-start;
+  bottom: 100%;
+  align-items: flex-end;
 }
 
 #variable-setters label {
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: column;
   align-items: center;
   font-size: calc(var(--min-distance-of-board) * .05);
 }
@@ -234,7 +230,7 @@ button:focus-visible, input:focus-visible {
 }
 
 .scores {
-  bottom: 100%;
+  top: 100%;
 }
 
 #score {
@@ -246,13 +242,13 @@ button:focus-visible, input:focus-visible {
 }
 
 #accessibility-div {
-  /* height === (Body height (100vh) - #wrapper-div height (without padding)) / 2, which is the space between Body's top point and #wrapper-div's content's top point */
-  --accessibility-div-height: calc((100dvh - var(--board-height) - (var(--total-border) * 2)) / 2);
+  /* height === (Body height (100vh) - #wrapper-div height) / 2, which is the space between the top point of Body and the top point of the padding-box of #wrapper-div */
+  --accessibility-div-height: calc((100vh - var(--board-height) - (var(--total-border) * 2) - (var(--total-border))) / 2);
   height: var(--accessibility-div-height);
   /* width === #wrapper-div-width */
   width: calc(var(--board-width) + (var(--total-border) * 2) + (var(--total-box-shadow) * 2));
   position: absolute;
-  top: 0%;
+  top: 100%;
   translate: -50% 0;
   left: 50%;
   display: grid;
