@@ -37,8 +37,8 @@
 }
 
 html {
-  height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100dvw;
   overflow: hidden;
 }
 
@@ -46,8 +46,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  width: 100vw;
+  height: 100dvh;
+  width: 100dvw;
   margin: 0px;
   font-family: 'VT323', monospace;
   overflow: hidden;
@@ -247,7 +247,7 @@ button:focus-visible, input:focus-visible {
 
 #accessibility-div {
   /* height === (Body height (100vh) - #wrapper-div height (without padding)) / 2, which is the space between Body's top point and #wrapper-div's content's top point */
-  --accessibility-div-height: calc((100vh - var(--board-height) - (var(--total-border) * 2)) / 2);
+  --accessibility-div-height: calc((100dvh - var(--board-height) - (var(--total-border) * 2)) / 2);
   height: var(--accessibility-div-height);
   /* width === #wrapper-div-width */
   width: calc(var(--board-width) + (var(--total-border) * 2) + (var(--total-box-shadow) * 2));
