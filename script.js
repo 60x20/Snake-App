@@ -497,6 +497,11 @@ renderViewport.addEventListener('click', () => {
   viewportWidth.innerText = root.clientWidth;
   viewportHeight.innerText = root.clientHeight;
 })
-viewportWidth.innerText = root.clientWidth;
-viewportHeight.innerText = root.clientHeight;
+viewportWidth.innerText = screen.availWidth;
+viewportHeight.innerText = screen.availWidth;
 console.log(root.clientWidth, root.clientHeight)
+
+screen.orientation.addEventListener('change', () => {
+  viewportWidth.innerText = screen.availWidth;
+  viewportHeight.innerText = screen.availWidth;
+})
