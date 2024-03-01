@@ -505,3 +505,8 @@ screen.orientation.addEventListener('change', () => {
   viewportWidth.innerText = window.innerWidth;
   viewportHeight.innerText = window.innerHeight;
 })
+
+window.addEventListener('load', () => {
+  viewportWidth.innerText = root.clientWidth;
+  viewportHeight.innerText = root.clientHeight;
+})
