@@ -379,7 +379,8 @@ function setSpeedFromInput (e) {
 };
 
 function setGridColumnFromInput (e) {
-  const columnSize = e.currentTarget.value;
+  // this handler will be called when screen orientation changes, so e.current.value will be undefined
+  const columnSize = e.currentTarget.value || (Math.round(root.clientWidth / parseInt(gridColumnPx) * .5) || 1);
   root.style.setProperty('--grid-column-size', columnSize);
   // columnSize is string
   gridColumnSize = Number(columnSize);
@@ -399,7 +400,8 @@ function setGridColumnFromInput (e) {
   }
 }
 function setGridRowFromInput (e) {
-  const rowSize = e.currentTarget.value;
+  // this handler will be called when screen orientation changes, so e.current.value will be undefined
+  const rowSize = e.currentTarget.value || (Math.round(root.clientHeight / parseInt(gridRowPx) * .5) || 1);
   root.style.setProperty('--grid-row-size', rowSize);
   // rowSize is string
   gridRowSize = Number(rowSize);
@@ -489,24 +491,10 @@ lastChildForTabLoop.addEventListener('focus', () => {
   firstBtnForTabLoop.focus();
 })
 
-// what is the viewport?
-const renderViewport = document.getElementById('renderViewport');
-const viewportHeight = document.getElementById('viewportHeight');
-const viewportWidth = document.getElementById('viewportWidth');
-renderViewport.addEventListener('click', () => {
-  viewportWidth.innerText = root.clientWidth;
-  viewportHeight.innerText = root.clientHeight;
-})
-viewportWidth.innerText = window.innerWidth;
-viewportHeight.innerText = window.innerHeight;
-console.log(root.clientWidth, root.clientHeight)
-
-screen.orientation.addEventListener('change', () => {
-  viewportWidth.innerText = window.innerWidth;
-  viewportHeight.innerText = window.innerHeight;
+// if screen orientation changes, game-board should adapt
+screen.orientation.addEventListener('change', (e) => {
+  setGridColumnFromInput(e);
+  setGridRowFromInput(e);
 })
 
-window.addEventListener('load', () => {
-  viewportWidth.innerText = root.clientWidth;
-  viewportHeight.innerText = root.clientHeight;
-})
+// Math.min(screen.width, window.innerHeight)
