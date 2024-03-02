@@ -3,7 +3,8 @@
   
   /* max function and vw, vh, px should not be altered, numbers can be (accessed via JS (regex used)) */
   /* vh, vw will be converted to px via JS to allow zooming */
-  --grid-column-px: max(4vh, 4vw, 8px);
+  /* grid-column-px set via media queries, depending on the aspect ratio */
+  --grid-column-px: max(3.5vh, 3.5vw, 8px);
   --grid-row-px: var(--grid-column-px);
 
   /* automatically set via JS */
@@ -36,6 +37,45 @@
   --min-distance-of-board: min(var(--board-height), var(--board-width));
   --wrapper-div-width: calc(var(--board-width) + (2 * var(--total-box-shadow)) + (2 * var(--total-border)));
   --wrapper-div-height: calc(var(--board-height) + (2 * var(--total-box-shadow)) + (2 * var(--total-border)));
+  --board-color: #c4cfa3;
+  --green-text-color: #abb78a;
+}
+
+/* setting grid-column-px depending on the aspect-ratio */
+/* width > height */
+@media (min-aspect-ratio: 1.4) {
+  :root {
+    --grid-column-px: max(1vh, 3.2vw, 8px);
+    --grid-row-px: var(--grid-column-px);
+  }
+}
+/* width >> height */
+@media (min-aspect-ratio: 1.6) {
+  :root {
+    --grid-column-px: max(1vh, 2.75vw, 8px);
+    --grid-row-px: var(--grid-column-px);
+  }
+}
+/* height > width */
+@media (max-aspect-ratio: .7) {
+  :root {
+    --grid-column-px: max(3.4vh, 1vw, 8px);
+    --grid-row-px: var(--grid-column-px);
+  }
+}
+/* height >> width */
+@media (max-aspect-ratio: .6) {
+  :root {
+    --grid-column-px: max(3.2vh, 1vw, 8px);
+    --grid-row-px: var(--grid-column-px);
+  }
+}
+/* similar */
+@media (min-aspect-ratio: .7) and (max-aspect-ratio: 1.4) {
+  :root {
+    --grid-column-px: max(3.5vh, 3.5vw, 8px);
+    --grid-row-px: var(--grid-column-px);
+  }
 }
 
 html, body {
@@ -67,6 +107,19 @@ body {
   height: 90%;
 }
 
+/* if height > width, space should be bigger */
+@media (max-aspect-ratio: 0.8) {
+  #wrapper-box {
+    height: 80%;
+  }
+}
+/* if height >> width */
+@media (max-aspect-ratio: 0.6) {
+  #wrapper-box {
+    height: 70%;
+  }
+}
+
 #wrapper-box > * {
   /* since they are placed at flex-start, they won't be at the center but should be at the center */
   margin-left: auto;
@@ -90,8 +143,6 @@ button {
 
 #wrapper-div {
   position: relative;
-  --board-color: #c4cfa3;
-  --green-text-color: #abb78a;
   padding: var(--total-box-shadow); /* padding is due to box shadow being outside of the document flow  */
   z-index: 0; /* creating a parent stacking context for children */
   font-size: calc(var(--min-distance-of-board) * .1);

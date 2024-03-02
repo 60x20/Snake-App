@@ -65,13 +65,13 @@ resetBtn.addEventListener('click', resetGame);
 
 // Define game variables
 const gridColumnPxCSS = getComputedStyle(root).getPropertyValue('--grid-column-px'); // max(Nvh, Nvw, Npx)
-const vhNumerator = Number(gridColumnPxCSS.match(/\d+(?=vh)/)[0]);
-const vwNumerator = Number(gridColumnPxCSS.match(/\d+(?=vw)/)[0]);
-const pxNumerator = Number(gridColumnPxCSS.match(/\d+(?=px)/)[0]);
+const vhNumerator = Number(gridColumnPxCSS.match(/(?:\d*[.]\d*|\d+)(?=vh)/)[0]) || 1;
+const vwNumerator = Number(gridColumnPxCSS.match(/(?:\d*[.]\d*|\d+)(?=vw)/)[0]) || 1;
+const pxNumerator = Number(gridColumnPxCSS.match(/(?:\d*[.]\d*|\d+)(?=px)/)[0]) || 1;
 // should not be less than 1
 const oneVH = Math.round(root.clientHeight * .01) || 1;
 const oneVW = Math.round(root.clientWidth * .01) || 1;
-const gridPixelBeginning = Math.max((oneVH * vhNumerator), (oneVW * vwNumerator), pxNumerator) + 'px';
+const gridPixelBeginning = Math.round(Math.max((oneVH * vhNumerator), (oneVW * vwNumerator), pxNumerator)) + 'px';
 root.style.setProperty('--grid-column-px', gridPixelBeginning);
 root.style.setProperty('--grid-row-px', gridPixelBeginning);
 let gridColumnPx = gridPixelBeginning;
