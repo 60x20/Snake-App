@@ -110,13 +110,13 @@ body {
 /* if height > width, space should be bigger */
 @media (max-aspect-ratio: 0.8) {
   #wrapper-box {
-    height: 80%;
+    height: 87.5%;
   }
 }
 /* if height >> width */
 @media (max-aspect-ratio: 0.6) {
   #wrapper-box {
-    height: 70%;
+    height: 85%;
   }
 }
 
@@ -326,6 +326,20 @@ button:focus-visible, input:focus-visible {
   height: calc(var(--wrapper-div-height) * .30);
   flex-shrink: 0; /* grid-items have their width & height set to auto, so they shrink, but they shouldn't */
   row-gap: 5%;
+}
+
+/* if height > width, then min-distance-of-board will be based on width, which will make the board-height cover less of the viewport height */
+/* if height > width,  */
+@media (max-aspect-ratio: 0.8) {
+  #accessibility-div {
+    height: calc(var(--wrapper-div-height) * .40);
+  }
+}
+/* if height >> width */
+@media (max-aspect-ratio: 0.6) {
+  #accessibility-div {
+    height: calc(var(--wrapper-div-height) * .45);
+  }
 }
 
 #accessibility-div button {
