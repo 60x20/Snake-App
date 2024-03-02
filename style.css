@@ -59,14 +59,35 @@
 /* height > width */
 @media (max-aspect-ratio: .7) {
   :root {
-    --grid-column-px: max(3.4vh, 1vw, 8px);
+    --grid-column-px: max(4vh, 1vw, 8px);
     --grid-row-px: var(--grid-column-px);
   }
 }
 /* height >> width */
 @media (max-aspect-ratio: .6) {
   :root {
-    --grid-column-px: max(3.2vh, 1vw, 8px);
+    --grid-column-px: max(3.8vh, 1vw, 8px);
+    --grid-row-px: var(--grid-column-px);
+  }
+}
+/* height >>> width */
+@media (max-aspect-ratio: .5) {
+  :root {
+    --grid-column-px: max(3.5vh, 1vw, 8px);
+    --grid-row-px: var(--grid-column-px);
+  }
+}
+/* height >>>> width */
+@media (max-aspect-ratio: .4) {
+  :root {
+    --grid-column-px: max(3vh, 1vw, 8px);
+    --grid-row-px: var(--grid-column-px);
+  }
+}
+/* height >>>>> width */
+@media (max-aspect-ratio: .35) {
+  :root {
+    --grid-column-px: max(2.5vh, 1vw, 8px);
     --grid-row-px: var(--grid-column-px);
   }
 }
@@ -107,19 +128,6 @@ body {
   height: 90%;
 }
 
-/* if height > width, space should be bigger */
-@media (max-aspect-ratio: 0.8) {
-  #wrapper-box {
-    height: 87.5%;
-  }
-}
-/* if height >> width */
-@media (max-aspect-ratio: 0.6) {
-  #wrapper-box {
-    height: 85%;
-  }
-}
-
 #wrapper-box > * {
   /* since they are placed at flex-start, they won't be at the center but should be at the center */
   margin-left: auto;
@@ -134,7 +142,7 @@ h1 {
 
 button {
   border: none;
-  font-size: calc(var(--min-distance-of-board) * .05);
+  font-size: calc(var(--min-distance-of-board) * .07);
   padding: calc(var(--min-distance-of-board) * .01);
   background-color: darkgray;
   color: black;
@@ -271,7 +279,7 @@ img {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: calc(var(--min-distance-of-board) * .05);
+  font-size: calc(var(--min-distance-of-board) * .07);
 }
 #variable-setters label span {
   color: var(--green-text-color);
@@ -280,7 +288,7 @@ img {
   width: 90%;
   border: 0;
   padding: 0;
-  font-size: calc(var(--min-distance-of-board) * .05);
+  font-size: calc(var(--min-distance-of-board) * .07);
   text-align: center;
   padding-block: 0;
   padding-inline: 0;
