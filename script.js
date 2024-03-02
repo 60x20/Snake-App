@@ -379,7 +379,8 @@ function setSpeedFromInput (e) {
 };
 
 function setGridColumnFromInput (e) {
-  // this handler will be called when screen orientation changes, so e.current.value will be undefined
+  // this handler will be called when screen orientation changes, in which case e.currentTarget.value will be undefined
+  // this handler will be called when screen is resized, in which case e.currentTarget.value will be undefined
   const columnSize = e.currentTarget.value || (Math.round(root.clientWidth / parseInt(gridColumnPx) * .5) || 1);
   root.style.setProperty('--grid-column-size', columnSize);
   // columnSize is string
@@ -497,4 +498,8 @@ screen.orientation.addEventListener('change', (e) => {
   setGridRowFromInput(e);
 })
 
-// Math.min(screen.width, window.innerHeight)
+// if screen is resized, game-board should adapt
+window.addEventListener("resize", (e) => {
+  setGridColumnFromInput(e);
+  setGridRowFromInput(e);
+});
