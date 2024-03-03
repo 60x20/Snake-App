@@ -64,16 +64,7 @@ toggleBtn.addEventListener('click', () => {gameStarted ? stopGame() : startGame(
 resetBtn.addEventListener('click', resetGame);
 
 // Define game variables
-const gridColumnPxCSS = getComputedStyle(root).getPropertyValue('--grid-column-px'); // max(Nvh, Nvw, Npx)
-const vhNumerator = Number(gridColumnPxCSS.match(/(?:\d*[.]\d*|\d+)(?=vh)/)[0]) || 1;
-const vwNumerator = Number(gridColumnPxCSS.match(/(?:\d*[.]\d*|\d+)(?=vw)/)[0]) || 1;
-const pxNumerator = Number(gridColumnPxCSS.match(/(?:\d*[.]\d*|\d+)(?=px)/)[0]) || 1;
-// should not be less than 1
-const oneVH = Math.round(root.clientHeight * .01) || 1;
-const oneVW = Math.round(root.clientWidth * .01) || 1;
-const gridPixelBeginning = Math.round(Math.max((oneVH * vhNumerator), (oneVW * vwNumerator), pxNumerator)) + 'px';
-root.style.setProperty('--grid-column-px', gridPixelBeginning);
-root.style.setProperty('--grid-row-px', gridPixelBeginning);
+let gridPixelBeginning = calculateGridPixelBeginning();
 let gridColumnPx = gridPixelBeginning;
 let gridRowPx = gridPixelBeginning;
 // gridColumnSize === 50vw / gridColumnPx(= 4vw || 4 vh || 8px), should not be less than 1
@@ -329,6 +320,21 @@ function addSnake(head) {
   board.prepend(snakeElement);
 }
 
+function calculateGridPixelBeginning() {
+  root.style.removeProperty('--grid-column-px'); // the --grid-column-px defined in the css will be obtained
+  const gridColumnPxCSS = getComputedStyle(root).getPropertyValue('--grid-column-px'); // max(Nvh, Nvw, Npx)
+  // should not be less than 1
+  const vhNumerator = Number(gridColumnPxCSS.match(/(?:\d*[.]\d*|\d+)(?=vh)/)[0]) || 1;
+  const vwNumerator = Number(gridColumnPxCSS.match(/(?:\d*[.]\d*|\d+)(?=vw)/)[0]) || 1;
+  const pxNumerator = Number(gridColumnPxCSS.match(/(?:\d*[.]\d*|\d+)(?=px)/)[0]) || 1;
+  const oneVH = Math.round(root.clientHeight * .01) || 1;
+  const oneVW = Math.round(root.clientWidth * .01) || 1;
+  const localGridPixelBeginning = Math.round(Math.max((vhNumerator * oneVH), (vwNumerator * oneVW), pxNumerator)) + 'px';
+  root.style.setProperty('--grid-column-px', localGridPixelBeginning);
+  root.style.setProperty('--grid-row-px', localGridPixelBeginning);
+  return localGridPixelBeginning;
+}
+
 // Keypress event listener
 function handleKeyPress(event) {
   // if keypress is on an input or button element do nothing
@@ -401,7 +407,8 @@ function setGridColumnFromInput (e) {
   }
 }
 function setGridRowFromInput (e) {
-  // this handler will be called when screen orientation changes, so e.current.value will be undefined
+  // this handler will be called when screen orientation changes, in which case e.currentTarget.value will be undefined
+  // this handler will be called when screen is resized, in which case e.currentTarget.value will be undefined
   const rowSize = e.currentTarget.value || (Math.round(root.clientHeight / parseInt(gridRowPx) * .5) || 1);
   root.style.setProperty('--grid-row-size', rowSize);
   // rowSize is string
@@ -480,11 +487,11 @@ function updateScore() {
   }
 }
 
+// tab loop
 const firstChildForTabLoop = document.querySelector('#accessibility-div > :first-child');
 const lastChildForTabLoop = document.querySelector('#accessibility-div > :last-child');
 const firstBtnForTabLoop = document.querySelector('#accessibility-div > button:first-of-type');
 const lastBtnForTabLoop = document.querySelector('#accessibility-div > button:last-of-type');
-
 firstChildForTabLoop.addEventListener('focus', () => {
   lastBtnForTabLoop.focus();
 })
@@ -500,6 +507,10 @@ screen.orientation.addEventListener('change', (e) => {
 
 // if screen is resized, game-board should adapt
 window.addEventListener("resize", (e) => {
+  gridPixelBeginning = calculateGridPixelBeginning();
+  gridColumnPx = gridPixelBeginning;
+  gridRowPx = gridPixelBeginning;
+  renderGridPx();
   setGridColumnFromInput(e);
   setGridRowFromInput(e);
 });
