@@ -39,6 +39,15 @@ for (const button of document.querySelectorAll("button.decrement-btn")) {
   button.addEventListener('click', decrementInputButton)
 }
 
+// button.addEventListener('mousedown', () => {
+//   const id = setInterval(() => {
+//     console.log('A');
+//   }, 50);
+//   document.addEventListener('mouseup', () => {
+//     clearInterval(id);
+//   }, { once: true });
+// });
+
 // accessibility buttons
 const moveUpBtn = document.getElementById('move-up-btn');
 const moveLeftBtn = document.getElementById('move-left-btn');
@@ -377,7 +386,8 @@ document.addEventListener('keydown', handleKeyPress);
 
 function setSpeedFromInput (e) {
   // delay should be number
-  let inputDelay = Number(e.currentTarget.value);
+  // this handler is also called with an object: ({currentTarget: input})
+  const inputDelay = Number(e.currentTarget.value);
   gameSpeedDelay = inputDelay;
   renderSpeed();
   // if game is not started, then do not start it 
@@ -390,6 +400,7 @@ function setSpeedFromInput (e) {
 function setGridColumnFromInput (e) {
   // this handler will be called when screen orientation changes, in which case e.currentTarget.value will be undefined
   // this handler will be called when screen is resized, in which case e.currentTarget.value will be undefined
+  // this handler is also called with an object: ({currentTarget: input})
   const columnSize = e.currentTarget.value || (Math.round(root.clientWidth / parseInt(gridColumnPx) * .5) || 1);
   root.style.setProperty('--grid-column-size', columnSize);
   // columnSize is string
@@ -412,6 +423,7 @@ function setGridColumnFromInput (e) {
 function setGridRowFromInput (e) {
   // this handler will be called when screen orientation changes, in which case e.currentTarget.value will be undefined
   // this handler will be called when screen is resized, in which case e.currentTarget.value will be undefined
+  // this handler is also called with an object: ({currentTarget: input})
   const rowSize = e.currentTarget.value || (Math.round(root.clientHeight / parseInt(gridRowPx) * .5) || 1);
   root.style.setProperty('--grid-row-size', rowSize);
   // rowSize is string
@@ -433,12 +445,14 @@ function setGridRowFromInput (e) {
 }
 
 function setGridColumnPxFromInput (e) {
+  // this handler is also called with an object: ({currentTarget: input})
   const columnPx = e.currentTarget.value + 'px';
   root.style.setProperty('--grid-column-px', columnPx);
   gridColumnPx = columnPx;
   renderGridPx();
 }
 function setGridRowPxFromInput (e) {
+  // this handler is also called with an object: ({currentTarget: input})
   const rowPx = e.currentTarget.value + 'px';
   root.style.setProperty('--grid-row-px', rowPx);
   gridRowPx = rowPx;
@@ -506,7 +520,35 @@ function incrementInputButton (e) {
   // parent is the sibling of the input, grandParent is the parent of the input
   for (const child of e.currentTarget.parentElement.parentElement.children) {
     if (child.matches('input')) {
-      child.value++;
+      // should not be greater than max
+      const maxVal = Number(child.getAttribute('max'));
+
+      if ((Number(child.value) + 1) >= maxVal) {
+        child.value = maxVal;
+      } else {
+        child.value++;
+      }
+
+      // should trigger an change event, handlers called with an object that has an 'currentTarget: input' property, so that value of the input can be obtained using e.currentTarget.value
+      const pseudoEvent = {currentTarget: child};
+      switch (child) {
+        case setSpeed:
+          setSpeedFromInput(pseudoEvent);
+          break;
+        case setGridColumnSize:
+          setGridColumnFromInput(pseudoEvent);
+          break;
+        case setGridRowSize:
+          setGridRowFromInput(pseudoEvent);
+          break;
+        case setGridColumnPx:
+          setGridColumnPxFromInput(pseudoEvent);
+          break;
+        case setGridRowPx:
+          setGridRowPxFromInput(pseudoEvent);
+          break;
+      }
+
       return undefined; // short circuit 
     }
   }
@@ -515,7 +557,35 @@ function decrementInputButton (e) {
   // parent is the sibling of the input, grandParent is the parent of the input
   for (const child of e.currentTarget.parentElement.parentElement.children) {
     if (child.matches('input')) {
-      child.value--;
+      // should not be less than min
+      const minVal = Number(child.getAttribute('min'));
+
+      if ((Number(child.value) - 1) <= minVal) {
+        child.value = minVal;
+      } else {
+        child.value--;
+      }
+
+      // should trigger an change event, handlers called with an object that has an 'currentTarget: input' property, so that value of the input can be obtained using e.currentTarget.value
+      const pseudoEvent = {currentTarget: child};
+      switch (child) {
+        case setSpeed:
+          setSpeedFromInput(pseudoEvent);
+          break;
+        case setGridColumnSize:
+          setGridColumnFromInput(pseudoEvent);
+          break;
+        case setGridRowSize:
+          setGridRowFromInput(pseudoEvent);
+          break;
+        case setGridColumnPx:
+          setGridColumnPxFromInput(pseudoEvent);
+          break;
+        case setGridRowPx:
+          setGridRowPxFromInput(pseudoEvent);
+          break;
+      }
+
       return undefined; // short circuit 
     }
   }
