@@ -124,8 +124,19 @@ body {
   /* must have fixed width and height, otherwise content will make the box bigger and since box is positioned at the center we will not be able to scroll to left and top */
   /* content will overflow towards right and bottom */
   width: 100%;
-  /* height 90% leaves 5% space at the top and bottom, and this places the contents (almost) at the center */
-  height: 90%;
+  /* height 95% leaves 2.5% space at the top and bottom, and this places the contents (almost) at the center */
+  height: 95%;
+}
+/* when width and height are similar adding some space to top might cause overflowing towards bottom */
+@media (max-aspect-ratio: 1.6) {
+  #wrapper-box {
+    height: 100%;
+  }  
+}
+@media (max-aspect-ratio: .6) {
+  #wrapper-box {
+    height: 95%;
+  }  
 }
 
 #wrapper-box > * {
@@ -230,6 +241,7 @@ img {
 
 #logo {
   height: calc(var(--min-distance-of-board) * .5);
+  width: 100%;
   object-fit: contain;
 }
 
@@ -273,30 +285,79 @@ img {
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-end;
+  column-gap: 1%;
 }
-
-#variable-setters label {
+#variable-setters > label {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: calc(var(--min-distance-of-board) * .07);
+  flex-shrink: 1;
 }
-#variable-setters label span {
+label:has([id*="grid-column"]) {
+  /* since 'column' is a long word, those that have this word should shrink more */
+  flex-shrink: 2 !important; /* low specificity */
+}
+#variable-setters > label span {
   color: var(--green-text-color);
 }
+#variable-setters .input-wrapper {
+  /* with this wrapper we are able to get input element's height */
+  position: relative;
+  width: 100%;
+}
 #variable-setters input {
-  width: 90%;
+  width: 100%;
+  height: 100%;
   border: 0;
   padding: 0;
   font-size: calc(var(--min-distance-of-board) * .07);
   text-align: center;
-  padding-block: 0;
-  padding-inline: 0;
-  appearance: textfield;
+  appearance: textfield; /* spin buttons are overridden */
 }
+/* spin buttons are overridden */
 input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
   -webkit-appearance: none;
-  margin: 0;
+}
+#variable-setters > label .crement-btn-wrapper {
+  width: calc(var(--min-distance-of-board) * .07);
+  max-width: 35%;
+  height: 100%;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  background-color: darkgray;
+}
+#variable-setters > label button {
+  padding: 0;
+  flex-grow: 1; /* buttons do not have any height, or content that can contribute to the height, flex-grow: 1 makes them cover the box equally */
+  background-color: transparent;
+  position: relative; /* parent containing block for absolutely positioned images*/
+  overflow: hidden; /* images are rotated, this makes some parts overflow */
+}
+#variable-setters > label button img {
+  position: absolute; /* img should not change the dimensions of its parent containing block */
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background-color: transparent;
+}
+#variable-setters > label button.increment-btn img {
+  rotate: 90deg;
+}
+#variable-setters > label button.decrement-btn img {
+  rotate: 270deg;
+}
+/* if height > width then there will be less space for the buttons if text-align is center */
+@media (max-aspect-ratio: 1.1) {
+  #variable-setters input {
+    text-align: left;
+  }
 }
 
 button:focus-visible, input:focus-visible {
@@ -334,6 +395,8 @@ button:focus-visible, input:focus-visible {
   height: calc(var(--wrapper-div-height) * .30);
   flex-shrink: 0; /* grid-items have their width & height set to auto, so they shrink, but they shouldn't */
   row-gap: 5%;
+  /* if accessibility-div overflows towards bottom, a space of 1% between bottom and accessibility-div will make the buttons more accessible */
+  padding-bottom: 1%;
 }
 
 /* if height > width, then min-distance-of-board will be based on width, which will make the board-height cover less of the viewport height */

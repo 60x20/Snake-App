@@ -32,6 +32,12 @@ setGridColumnPx.addEventListener('keyup', (e) => {if (e.key === 'Enter') {setGri
 setGridRowPx.addEventListener('change', setGridRowPxFromInput);
 setGridRowPx.addEventListener('keyup', (e) => {if (e.key === 'Enter') {setGridRowPxFromInput(e)}});
 collisionBtn.addEventListener('click', setCollisionState);
+for (const button of document.querySelectorAll("button.increment-btn")) {
+  button.addEventListener('click', incrementInputButton)
+}
+for (const button of document.querySelectorAll("button.decrement-btn")) {
+  button.addEventListener('click', decrementInputButton)
+}
 
 // accessibility buttons
 const moveUpBtn = document.getElementById('move-up-btn');
@@ -342,16 +348,13 @@ function handleKeyPress(event) {
   if (event.target && event.target.matches('input')) {
     return undefined;
   }
-  
-  // disabling scrolling with arrow keys
-  if(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+
+  // disabling scrolling with arrow keys and space
+  if([' ', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
     event.preventDefault();
   }
 
-  if (
-    (!gameStarted && event.code === 'Space') ||
-    (!gameStarted && event.key === ' ')
-  ) {
+  if (!gameStarted && (event.code === 'Space' || event.key === ' ')) {
     startGame();
   } else {
     switch (event.key) {
@@ -499,6 +502,25 @@ lastChildForTabLoop.addEventListener('focus', () => {
   firstBtnForTabLoop.focus();
 })
 
+function incrementInputButton (e) {
+  // parent is the sibling of the input, grandParent is the parent of the input
+  for (const child of e.currentTarget.parentElement.parentElement.children) {
+    if (child.matches('input')) {
+      child.value++;
+      return undefined; // short circuit 
+    }
+  }
+}
+function decrementInputButton (e) {
+  // parent is the sibling of the input, grandParent is the parent of the input
+  for (const child of e.currentTarget.parentElement.parentElement.children) {
+    if (child.matches('input')) {
+      child.value--;
+      return undefined; // short circuit 
+    }
+  }
+}
+
 // if screen orientation changes, game-board should adapt
 screen.orientation.addEventListener('change', (e) => {
   setGridColumnFromInput(e);
@@ -506,11 +528,22 @@ screen.orientation.addEventListener('change', (e) => {
 })
 
 // if screen is resized, game-board should adapt
+let aspectRatioGlobal = calculateAspectRatio();
+function calculateAspectRatio () {
+  return parseInt((root.clientWidth / root.clientHeight) * 1000);
+}
 window.addEventListener("resize", (e) => {
-  gridPixelBeginning = calculateGridPixelBeginning();
-  gridColumnPx = gridPixelBeginning;
-  gridRowPx = gridPixelBeginning;
-  renderGridPx();
-  setGridColumnFromInput(e);
-  setGridRowFromInput(e);
+  // 'resize' event is triggered when zoomed in or out, which disables zooming. When zoomed aspect ratio should not change much
+  const localAspectRatio = calculateAspectRatio();
+  const ratioOfAspectRatios = aspectRatioGlobal / localAspectRatio;
+  if ((ratioOfAspectRatios > 1.05) || (ratioOfAspectRatios < .95)) { 
+    // if the ratios are different then resize and save, if similar then do not resize and not save
+    aspectRatioGlobal = localAspectRatio;
+    gridPixelBeginning = calculateGridPixelBeginning();
+    gridColumnPx = gridPixelBeginning;
+    gridRowPx = gridPixelBeginning;
+    renderGridPx();
+    setGridColumnFromInput(e);
+    setGridRowFromInput(e);
+  }
 });
