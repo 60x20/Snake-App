@@ -287,16 +287,18 @@ img {
   align-items: flex-end;
   column-gap: 1%;
 }
+#variable-setters > * {
+  flex-shrink: 2; /* so that grid-column-size and grid-column-px don't shrink too much */
+}
 #variable-setters > label {
   display: flex;
   flex-direction: column;
   align-items: center;
   font-size: calc(var(--min-distance-of-board) * .07);
-  flex-shrink: 1;
 }
 label:has([id*="grid-column"]) {
   /* since 'column' is a long word, those that have this word should shrink more */
-  flex-shrink: 2 !important; /* low specificity */
+  flex-shrink: 3 !important; /* low specificity */
 }
 #variable-setters > label span {
   color: var(--green-text-color);
