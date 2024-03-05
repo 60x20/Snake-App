@@ -40,7 +40,7 @@ for (const button of document.querySelectorAll("button.increment-btn")) {
 for (const button of document.querySelectorAll("button.decrement-btn")) {
   button.addEventListener('click', decrementInputButton);
   button.addEventListener('mousedown', holdToDecrementInputButton);
-  button.addEventListener('touchcancel', holdToDecrementInputButton);
+  button.addEventListener('touchstart', holdToDecrementInputButton);
 }
 
 // accessibility buttons
@@ -567,10 +567,15 @@ function holdToIncrementInputButton (e) {
         }
       }, 100)
 
-      document.addEventListener('mouseup', () => {
+      if (e.type === 'mousedown') {
+        document.addEventListener('mouseup', stopTheCrement, { once: true });
+      } else if (e.type === 'touchstart') {
+        document.addEventListener('touchcancel', stopTheCrement, { once: true });
+      }
+      function stopTheCrement () {
         clearInterval(intervalID);
         whichHandlerToCall(child); // call the handler to apply the input value
-      }, { once: true });
+      }
 
       return undefined; // short circuit, 
     }
@@ -591,10 +596,15 @@ function holdToDecrementInputButton (e) {
         }
       }, 100)
 
-      document.addEventListener('mouseup', () => {
+      if (e.type === 'mousedown') {
+        document.addEventListener('mouseup', stopTheCrement, { once: true });
+      } else if (e.type === 'touchstart') {
+        document.addEventListener('touchcancel', stopTheCrement, { once: true });
+      }
+      function stopTheCrement () {
         clearInterval(intervalID);
         whichHandlerToCall(child); // call the handler to apply the input value
-      }, { once: true });
+      }
 
       return undefined; // short circuit, 
     }
