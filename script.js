@@ -35,12 +35,12 @@ collisionBtn.addEventListener('click', setCollisionState);
 for (const button of document.querySelectorAll("button.increment-btn")) {
   button.addEventListener('click', incrementInputButton);
   button.addEventListener('mousedown', holdToIncrementInputButton);
-  button.addEventListener('touchstart', holdToIncrementInputButton);
+  // button.addEventListener('touchstart', holdToIncrementInputButton);
 }
 for (const button of document.querySelectorAll("button.decrement-btn")) {
   button.addEventListener('click', decrementInputButton);
   button.addEventListener('mousedown', holdToDecrementInputButton);
-  button.addEventListener('touchstart', holdToDecrementInputButton);
+  // button.addEventListener('touchstart', holdToDecrementInputButton);
 }
 
 // accessibility buttons
@@ -567,11 +567,11 @@ function holdToIncrementInputButton (e) {
         }
       }, 100)
 
-      if (e.type === 'mousedown') {
+      // if (e.type === 'mousedown') {
         document.addEventListener('mouseup', stopTheCrement, { once: true });
-      } else if (e.type === 'touchstart') {
-        document.addEventListener('touchcancel', stopTheCrement, { once: true });
-      }
+      // } else if (e.type === 'touchstart') {
+        // document.addEventListener('touchcancel', stopTheCrement, { once: true });
+      // }
       function stopTheCrement () {
         clearInterval(intervalID);
         whichHandlerToCall(child); // call the handler to apply the input value
@@ -596,11 +596,11 @@ function holdToDecrementInputButton (e) {
         }
       }, 100)
 
-      if (e.type === 'mousedown') {
+      // if (e.type === 'mousedown') {
         document.addEventListener('mouseup', stopTheCrement, { once: true });
-      } else if (e.type === 'touchstart') {
-        document.addEventListener('touchcancel', stopTheCrement, { once: true });
-      }
+      // } else if (e.type === 'touchstart') {
+        // document.addEventListener('touchcancel', stopTheCrement, { once: true });
+      // }
       function stopTheCrement () {
         clearInterval(intervalID);
         whichHandlerToCall(child); // call the handler to apply the input value
