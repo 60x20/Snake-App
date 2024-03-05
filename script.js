@@ -35,10 +35,12 @@ collisionBtn.addEventListener('click', setCollisionState);
 for (const button of document.querySelectorAll("button.increment-btn")) {
   button.addEventListener('click', incrementInputButton);
   button.addEventListener('mousedown', holdToIncrementInputButton);
+  button.addEventListener('touchstart', holdToIncrementInputButton);
 }
 for (const button of document.querySelectorAll("button.decrement-btn")) {
   button.addEventListener('click', decrementInputButton);
   button.addEventListener('mousedown', holdToDecrementInputButton);
+  button.addEventListener('touchcancel', holdToDecrementInputButton);
 }
 
 // accessibility buttons
