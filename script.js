@@ -35,12 +35,12 @@ collisionBtn.addEventListener('click', setCollisionState);
 for (const button of document.querySelectorAll("button.increment-btn")) {
   button.addEventListener('click', incrementInputButton);
   button.addEventListener('mousedown', holdToIncrementInputButton);
-  // button.addEventListener('touchstart', holdToIncrementInputButton);
+  button.addEventListener('touchstart', holdToIncrementInputButton);
 }
 for (const button of document.querySelectorAll("button.decrement-btn")) {
   button.addEventListener('click', decrementInputButton);
   button.addEventListener('mousedown', holdToDecrementInputButton);
-  // button.addEventListener('touchstart', holdToDecrementInputButton);
+  button.addEventListener('touchstart', holdToDecrementInputButton);
 }
 
 // accessibility buttons
@@ -557,7 +557,6 @@ function holdToIncrementInputButton (e) {
   for (const child of e.currentTarget.parentElement.parentElement.children) {
     if (child.matches('input')) {
       // should not be greater than max
-      console.log('I')
       const maxVal = Number(child.getAttribute('max'));
 
       const intervalID = setInterval(() => {
@@ -568,11 +567,11 @@ function holdToIncrementInputButton (e) {
         }
       }, 100)
 
-      // if (e.type === 'mousedown') {
+      if (e.type === 'mousedown') {
         document.addEventListener('mouseup', stopTheCrement, { once: true });
-      // } else if (e.type === 'touchstart') {
-        // document.addEventListener('touchcancel', stopTheCrement, { once: true });
-      // }
+      } else if (e.type === 'touchstart') {
+        document.addEventListener('touchend', stopTheCrement, { once: true });
+      }
       function stopTheCrement () {
         clearInterval(intervalID);
         whichHandlerToCall(child); // call the handler to apply the input value
@@ -587,7 +586,6 @@ function holdToDecrementInputButton (e) {
   for (const child of e.currentTarget.parentElement.parentElement.children) {
     if (child.matches('input')) {
       // should not be less than min
-      console.log('me')
       const minVal = Number(child.getAttribute('min'));
 
       const intervalID = setInterval(() => {
@@ -598,11 +596,11 @@ function holdToDecrementInputButton (e) {
         }
       }, 100)
 
-      // if (e.type === 'mousedown') {
+      if (e.type === 'mousedown') {
         document.addEventListener('mouseup', stopTheCrement, { once: true });
-      // } else if (e.type === 'touchstart') {
-        // document.addEventListener('touchcancel', stopTheCrement, { once: true });
-      // }
+      } else if (e.type === 'touchstart') {
+        document.addEventListener('touchend', stopTheCrement, { once: true });
+      }
       function stopTheCrement () {
         clearInterval(intervalID);
         whichHandlerToCall(child); // call the handler to apply the input value
