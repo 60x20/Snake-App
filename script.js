@@ -33,20 +33,13 @@ setGridRowPx.addEventListener('change', setGridRowPxFromInput);
 setGridRowPx.addEventListener('keyup', (e) => {if (e.key === 'Enter') {setGridRowPxFromInput(e)}});
 collisionBtn.addEventListener('click', setCollisionState);
 for (const button of document.querySelectorAll("button.increment-btn")) {
-  button.addEventListener('click', incrementInputButton)
+  button.addEventListener('click', incrementInputButton);
+  button.addEventListener('mousedown', holdToIncrementInputButton);
 }
 for (const button of document.querySelectorAll("button.decrement-btn")) {
-  button.addEventListener('click', decrementInputButton)
+  button.addEventListener('click', decrementInputButton);
+  button.addEventListener('mousedown', holdToDecrementInputButton);
 }
-
-// button.addEventListener('mousedown', () => {
-//   const id = setInterval(() => {
-//     console.log('A');
-//   }, 50);
-//   document.addEventListener('mouseup', () => {
-//     clearInterval(id);
-//   }, { once: true });
-// });
 
 // accessibility buttons
 const moveUpBtn = document.getElementById('move-up-btn');
@@ -530,24 +523,7 @@ function incrementInputButton (e) {
       }
 
       // should trigger an change event, handlers called with an object that has an 'currentTarget: input' property, so that value of the input can be obtained using e.currentTarget.value
-      const pseudoEvent = {currentTarget: child};
-      switch (child) {
-        case setSpeed:
-          setSpeedFromInput(pseudoEvent);
-          break;
-        case setGridColumnSize:
-          setGridColumnFromInput(pseudoEvent);
-          break;
-        case setGridRowSize:
-          setGridRowFromInput(pseudoEvent);
-          break;
-        case setGridColumnPx:
-          setGridColumnPxFromInput(pseudoEvent);
-          break;
-        case setGridRowPx:
-          setGridRowPxFromInput(pseudoEvent);
-          break;
-      }
+      whichHandlerToCall(child);
 
       return undefined; // short circuit 
     }
@@ -567,27 +543,80 @@ function decrementInputButton (e) {
       }
 
       // should trigger an change event, handlers called with an object that has an 'currentTarget: input' property, so that value of the input can be obtained using e.currentTarget.value
-      const pseudoEvent = {currentTarget: child};
-      switch (child) {
-        case setSpeed:
-          setSpeedFromInput(pseudoEvent);
-          break;
-        case setGridColumnSize:
-          setGridColumnFromInput(pseudoEvent);
-          break;
-        case setGridRowSize:
-          setGridRowFromInput(pseudoEvent);
-          break;
-        case setGridColumnPx:
-          setGridColumnPxFromInput(pseudoEvent);
-          break;
-        case setGridRowPx:
-          setGridRowPxFromInput(pseudoEvent);
-          break;
-      }
+      whichHandlerToCall(child)
 
       return undefined; // short circuit 
     }
+  }
+}
+
+function holdToIncrementInputButton (e) {
+  // parent is the sibling of the input, grandParent is the parent of the input
+  for (const child of e.currentTarget.parentElement.parentElement.children) {
+    if (child.matches('input')) {
+      // should not be greater than max
+      const maxVal = Number(child.getAttribute('max'));
+
+      const intervalID = setInterval(() => {
+        if ((Number(child.value) + 1) >= maxVal) {
+          child.value = maxVal;
+        } else {
+          child.value++;
+        }
+      }, 100)
+
+      document.addEventListener('mouseup', () => {
+        clearInterval(intervalID);
+        whichHandlerToCall(child); // call the handler to apply the input value
+      }, { once: true });
+
+      return undefined; // short circuit, 
+    }
+  }
+}
+function holdToDecrementInputButton (e) {
+  // parent is the sibling of the input, grandParent is the parent of the input
+  for (const child of e.currentTarget.parentElement.parentElement.children) {
+    if (child.matches('input')) {
+      // should not be less than min
+      const minVal = Number(child.getAttribute('min'));
+
+      const intervalID = setInterval(() => {
+        if ((Number(child.value) - 1) <= minVal) {
+          child.value = minVal;
+        } else {
+          child.value--;
+        }
+      }, 100)
+
+      document.addEventListener('mouseup', () => {
+        clearInterval(intervalID);
+        whichHandlerToCall(child); // call the handler to apply the input value
+      }, { once: true });
+
+      return undefined; // short circuit, 
+    }
+  }
+}
+
+function whichHandlerToCall (inputElement) {
+  const pseudoEvent = {currentTarget: inputElement};
+  switch (inputElement) {
+    case setSpeed:
+      setSpeedFromInput(pseudoEvent);
+      break;
+    case setGridColumnSize:
+      setGridColumnFromInput(pseudoEvent);
+      break;
+    case setGridRowSize:
+      setGridRowFromInput(pseudoEvent);
+      break;
+    case setGridColumnPx:
+      setGridColumnPxFromInput(pseudoEvent);
+      break;
+    case setGridRowPx:
+      setGridRowPxFromInput(pseudoEvent);
+      break;
   }
 }
 
