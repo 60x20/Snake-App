@@ -356,9 +356,14 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
   rotate: 270deg;
 }
 /* if height > width then there will be less space for the buttons if text-align is center */
+/* buttons seem so small when width is too small, they should be bigger if height > width */
 @media (max-aspect-ratio: 1.1) {
   #variable-setters input {
     text-align: left;
+  }
+  #variable-setters > label .crement-btn-wrapper {
+    width: 45%;
+    max-width: 45%;
   }
 }
 
