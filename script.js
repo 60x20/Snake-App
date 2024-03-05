@@ -557,6 +557,7 @@ function holdToIncrementInputButton (e) {
   for (const child of e.currentTarget.parentElement.parentElement.children) {
     if (child.matches('input')) {
       // should not be greater than max
+      console.log('I')
       const maxVal = Number(child.getAttribute('max'));
 
       const intervalID = setInterval(() => {
@@ -586,6 +587,7 @@ function holdToDecrementInputButton (e) {
   for (const child of e.currentTarget.parentElement.parentElement.children) {
     if (child.matches('input')) {
       // should not be less than min
+      console.log('me')
       const minVal = Number(child.getAttribute('min'));
 
       const intervalID = setInterval(() => {
