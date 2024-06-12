@@ -540,7 +540,7 @@ function decrementInputButton (e) {
   }
 
   // should trigger a change event, handlers called with an object that has an 'currentTarget: input' property, so that value of the input can be obtained using e.currentTarget.value
-  whichHandlerToCall(input)
+  whichHandlerToCall(input);
 }
 
 function holdToIncrementInputButton (e) {
